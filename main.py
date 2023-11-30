@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
     # Configure locales
     command(f'sudo arch-chroot {args.root_partition} sudo echo "{config_data["locale"]}" >> /etc/locale.gen')
-    command(f'sudo arch-chroot {args.root_partition} sudo echo "LANG={config[locale]}" >> /etc/locale.conf')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo "LANG={config["locale"]}" >> /etc/locale.conf')
     command(f'sudo arch-chroot {args.root_partition} sudo locale-gen')
 
     # Configure hostname
