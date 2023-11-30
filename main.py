@@ -71,7 +71,6 @@ if __name__ == '__main__':
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
-
     
     # Configure bootloader [Check if config is empty and decide to run]
     #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["bootloader_cfg"]} >> /etc/default/grub')
