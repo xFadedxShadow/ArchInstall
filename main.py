@@ -106,9 +106,7 @@ if __name__ == '__main__':
 
     # Configure users
     for user in config_data["users"]:
-        command(f'sudo arch-chroot {args.root_partition} sudo usermod -m {user}')
-        for group in config_data["groups"]:
-            command(f'sudo arch-chroot {args.root_partition} sudo usermod -aG {group} {user}')
+        command(f'sudo arch-chroot {args.root_partition} sudo usermod -m -g users -G wheel,storage,power -s /bin/bash {user}')
     
     # Enable system services
     for service in config_data["system_services"]:
