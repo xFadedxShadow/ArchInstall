@@ -116,17 +116,17 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
     
     # Configure bootloader [Check if config is empty and decide to run]
-    if config_data["bootloader_cfg"] != "default" or config_data["bootloader_cfg"] != None:
+    if config_data["bootloader_cfg"] != "default":
         command(f'sudo arch-chroot {args.root_partition} sudo cp configs/grub/{config_data["bootloader_cfg"]} >> /etc/default/grub')
     
     # Installs drivers
-    if config_data["drivers"] != "default" or config_data["drivers"] != None:
+    if config_data["drivers"] != "default":
         for package in config_data["drivers"]:
             command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Configure drivers [Check if config is empty and decide to run]
-    if config_data["drivers_cfg"] != "default" or config_data["drivers_cfg"] != None:
-        command(f'sudo arch-chroot {args.root_partition} sudo cp config/mkinitcpio/{config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
+    if config_data["drivers_cfg"] != "default":
+        command(f'sudo arch-chroot {args.root_partition} sudo cp configs/mkinitcpio/{config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
     
     # Installs additional packages
     for package in config_data["post_packages"]:
@@ -144,12 +144,12 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo hwclock --systohc')
 
     # Configure locales
-    command(f'sudo arch-chroot {args.root_partition} sudo echo "{config_data["locale"]}" >> /etc/locale.gen')
-    command(f'sudo arch-chroot {args.root_partition} sudo echo "LANG={config["locale"]}" >> /etc/locale.conf')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["locale"]}" >> /etc/locale.gen')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "LANG={config["locale"]}" >> /etc/locale.conf')
     command(f'sudo arch-chroot {args.root_partition} sudo locale-gen')
 
-    # Configure hostname
-    command(f'sudo arch-chroot {args.root_partition} sudo echo "{config_data["hostname"]}" >> /etc/hostname')
+    # Configure hostname || Did not configure hostname
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["hostname"]}" >> /etc/hostname')
 
     # Configure users
     for user in config_data["users"]:
