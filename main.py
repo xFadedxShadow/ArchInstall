@@ -29,7 +29,7 @@ config = {
 # Writes default configuration if not found.
 def write_config():
     with open('config.cfg', 'w') as f:
-    f.write(json.dumps(config, indent=4))
+        f.write(json.dumps(config, indent=4))
 
 
 # Reads a configuration
