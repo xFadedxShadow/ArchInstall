@@ -21,7 +21,6 @@ config = {
     ],
     "audio_subsystem": [
         "pipewire",
-        "lib32-pipewire",
         "pipewire-pulse",
         "pipewire-audio",
         "pipewire-alsa",
@@ -117,7 +116,7 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
     
     # Configure bootloader [Check if config is empty and decide to run]
-    if config_data["bootload_cfg"] != "default" or config_data["bootloader_cfg"] != None:
+    if config_data["bootloader_cfg"] != "default" or config_data["bootloader_cfg"] != None:
         command(f'sudo arch-chroot {args.root_partition} sudo cp configs/grub/{config_data["bootloader_cfg"]} >> /etc/default/grub')
     
     # Installs drivers
