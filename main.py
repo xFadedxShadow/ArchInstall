@@ -82,7 +82,7 @@ def read_config(configuration):
 
 # Chroots into root enviorment and runs a command.
 def command(command):
-    os.system(command)
+    os.system(f'/bin/bash -c {command}')
 
 
 if __name__ == '__main__':
@@ -114,7 +114,8 @@ if __name__ == '__main__':
     
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
     
-    # Configure bootloader [Check if config is empty and decide to run]
+    # Configure bootloader [Check if config is empty and decide to run] > tries to install a default config which cannot be found?
+    print(f"Error Test: {config_data["bootloader_cfg"]}")
     if config_data["bootloader_cfg"] != "default":
         command(f'sudo arch-chroot {args.root_partition} sudo cp configs/grub/{config_data["bootloader_cfg"]} >> /etc/default/grub')
     
@@ -143,13 +144,14 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo hwclock --systohc')
 
     # Configure locales
-    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["locale"]} UTF-8" >> /etc/locale.gen')
-    command(f'sudo arch-chroot {args.root_partition} sudo echo -e LANG="{config["locale"]}" >> /etc/locale.conf')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["locale"]} UTF-8" >> /etc/locale.gen') # Not echoing into file.
+    command(f'sudo arch-chroot {args.root_partition} sudo touch /etc/locale.conf')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e LANG="{config["locale"]}" >> /etc/locale.conf') # Not echoing into file.
     command(f'sudo arch-chroot {args.root_partition} sudo locale-gen')
 
     # Configure hostname || Did not configure hostname
     command(f'sudo arch-chroot {args.root_partition} sudo touch /etc/hostname')
-    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["hostname"]}" >> /etc/hostname')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["hostname"]}" >> /etc/hostname') # Not echoing into file.
 
     # Configure users
     for user in config_data["users"]:
