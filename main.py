@@ -43,9 +43,9 @@ def read_config(configuration):
 # Chroots into root enviorment and runs a command.
 def command(command):
         try:
-            subprocess.check_output(command, shell=True).rstrip()
+            subprocess.check_output(command, shell=True).strip()
         except subprocess.CalledProcessError as error:
-            print(error.output).rstrip()
+            print(error.output).strip()
 
 
 if __name__ == '__main__':
