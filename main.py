@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
+import os
 import argparse
 import itertools
-import subprocess
 from configparser import ConfigParser
 
 # Still have to add disk configuration, partitioning, formatting.
@@ -42,10 +42,7 @@ def read_config(configuration):
 
 # Chroots into root enviorment and runs a command.
 def command(command):
-        try:
-            subprocess.check_output(command, shell=True).strip()
-        except subprocess.CalledProcessError as error:
-            print(error.output).strip()
+    os.system(command)
 
 
 if __name__ == '__main__':
