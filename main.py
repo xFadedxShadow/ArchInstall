@@ -55,22 +55,22 @@ if __name__ == '__main__':
     config_data = config["xFadedxShadowsConfig"]
     
     # Runs pacstrap for base packages.
-    for package in list(config_data["base"]):
+    for package in list(config_data["base"].keys()):
         command(f'sudo pacstrap -K {args.root_partition} {package}')
     
     # Generate fstab
     command(f'sudo genfstab -U {args.root_partition} >> {args.root_partition}/etc/fstab')
     
     # Installs audio subsystem
-    for package in list(config_data["audio_subsystem"]):
+    for package in list(config_data["audio_subsystem"].keys()):
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Installs networking
-    for package in list(config_data["network"]):
+    for package in list(config_data["network"].keys()):
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Installs bootloader
-    for package in list(config_data["bootloader"]):
+    for package in list(config_data["bootloader"].keys()):
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
     
     # Installs additional packages
-    for package in list(config_data["post_packages"]):
+    for package in list(config_data["post_packages"].keys()):
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Configures pacman hooks. [Check if hooks is empty or not and is nvidia]
@@ -108,13 +108,13 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo echo "{config_data["hostname"]}" >> /etc/hostname')
 
     # Configure users
-    for user in list(config_data["users"]):
+    for user in list(config_data["users"].keys()):
         command(f'sudo arch-chroot {args.root_partition} sudo usermod -m {user}')
-        for group in list(config_data["groups"]):
+        for group in list(config_data["groups"].keys()):
             command(f'sudo arch-chroot {args.root_partition} sudo usermod -aG {group} {user}')
     
     # Enable system services
-    for service in list(config_data["system_services"]):
+    for service in list(config_data["system_services"].keys()):
         command(f'sudo arch-chroot {args.root_partition} sudo systemctl enable {service}')
     
     # Regenerate initramfs & grub configuration
