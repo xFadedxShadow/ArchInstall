@@ -28,12 +28,12 @@ config = {
 
 # Writes default configuration if not found.
 def write_config():
-    json.dumps(config)
+    json.dumps(config, indent=4)
 
 
 # Reads a configuration
 def read_config(configuration):
-    json.read(configuration)
+    json.loads(configuration)
 
 
 # Chroots into root enviorment and runs a command.
