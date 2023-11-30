@@ -45,7 +45,7 @@ def command(command):
         try:
             subprocess.check_output(command, shell=True).rstrip()
         except subprocess.CalledProcessError as error:
-            print(error.output)
+            print(error.output).rstrip()
 
 
 if __name__ == '__main__':
