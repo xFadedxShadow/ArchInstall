@@ -43,7 +43,7 @@ def read_config(configuration):
 # Chroots into root enviorment and runs a command.
 def command(command):
         try:
-            subprocess.check_output(command, shell=True)
+            subprocess.check_output(command.strip(), shell=True)
         except subprocess.CalledProcessError as error:
             print(error.output)
 
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     
     # Runs pacstrap for base packages.
     for package in config_data["base"]:
-        command(f'sudo pacstrap -K "{args.root_partition}" {package}')
+        command(f'sudo pacstrap -K {args.root_partition} {package}')
     
     # Generate fstab
     command(f'sudo genfstab -U {args.root_partition} >> {args.root_partition}/etc/fstab')
