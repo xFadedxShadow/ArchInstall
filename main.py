@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
 import os
+import json
 import argparse
 import itertools
-from configparser import ConfigParser
 
-# Still have to add disk configuration, partitioning, formatting.
-
-config = ConfigParser()
 
 # xFadedxShadows Configuration File.
-config["xFadedxShadowsConfig"] = {
+config = {
     'base': ['base', 'base-devel', 'linux-zen', 'linux-zen-headers', 'linux-firmware', 'sudo', 'nano', 'xdg-user-dirs', 'amd-ucode'],
     'audio_subsystem': ['pipewire', 'lib32-pipewire', 'pipewire-pulse', 'pipewire-audio', 'pipewire-alsa', 'pipewire-jack', 'lib32-pipewire-jack'],
     'network': ['networkmanager'],
@@ -31,13 +28,12 @@ config["xFadedxShadowsConfig"] = {
 
 # Writes default configuration if not found.
 def write_config():
-    with open('config.cfg', 'w') as data:
-        config.write(data)
+    json.dumps(config)
 
 
 # Reads a configuration
 def read_config(configuration):
-    config.read(configuration)
+    json.read(configuration)
 
 
 # Chroots into root enviorment and runs a command.
@@ -51,26 +47,25 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     write_config()
-    read_config('config.cfg')
-    config_data = config["xFadedxShadowsConfig"]
+    config_data = read_config("config.cfg")
     
     # Runs pacstrap for base packages.
-    for package in list(config_data["base"].keys()):
+    for package in config_data["base"]:
         command(f'sudo pacstrap -K {args.root_partition} {package}')
     
     # Generate fstab
     command(f'sudo genfstab -U {args.root_partition} >> {args.root_partition}/etc/fstab')
     
     # Installs audio subsystem
-    for package in list(config_data["audio_subsystem"].keys()):
+    for package in config_data["audio_subsystem"]:
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Installs networking
-    for package in list(config_data["network"].keys()):
+    for package in config_data["network"]:
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Installs bootloader
-    for package in list(config_data["bootloader"].keys()):
+    for package in config_data["bootloader"]:
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
@@ -80,14 +75,14 @@ if __name__ == '__main__':
     #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["bootloader_cfg"]} >> /etc/default/grub')
     
     # Installs drivers
-    #for package in list(config_data["drivers"]):
+    #for package in config_data["drivers"]:
     #    command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Configure drivers [Check if config is empty and decide to run]
     #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
     
     # Installs additional packages
-    for package in list(config_data["post_packages"].keys()):
+    for package in config_data["post_packages"]:
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Configures pacman hooks. [Check if hooks is empty or not and is nvidia]
@@ -108,13 +103,13 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo echo "{config_data["hostname"]}" >> /etc/hostname')
 
     # Configure users
-    for user in list(config_data["users"].keys()):
+    for user in config_data["users"]:
         command(f'sudo arch-chroot {args.root_partition} sudo usermod -m {user}')
-        for group in list(config_data["groups"].keys()):
+        for group in config_data["groups"]:
             command(f'sudo arch-chroot {args.root_partition} sudo usermod -aG {group} {user}')
     
     # Enable system services
-    for service in list(config_data["system_services"].keys()):
+    for service in config_data["system_services"]:
         command(f'sudo arch-chroot {args.root_partition} sudo systemctl enable {service}')
     
     # Regenerate initramfs & grub configuration
