@@ -53,66 +53,66 @@ if __name__ == '__main__':
     config_data = config["xFadedxShadowsConfig"]
     
     # Runs pacstrap for base packages.
-    for package in config["base"]:
+    for package in config_data["base"]:
         command(f'sudo pacstrap -K {package}')
     
     # Generate fstab
     command(f'sudo genfstab -U /{root_parition} >> /{root_parition}/etc/fstab')
     
     # Installs audio subsystem
-    for package in config["audio_subsystem"]:
+    for package in config_data["audio_subsystem"]:
         command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
     
     # Installs networking
-    for package in config["network"]:
+    for package in config_data["network"]:
         command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
     
     # Installs bootloader
-    for package in config["bootloader"]:
+    for package in config_data["bootloader"]:
         command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
     
     command(f'sudo arch-chroot /{root_parition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
 
     
     # Configure bootloader [Check if config is empty and decide to run]
-    #command(f'sudo arch-chroot /{root_parition} sudo cp {config["bootloader_cfg"]} >> /etc/default/grub')
+    #command(f'sudo arch-chroot /{root_parition} sudo cp {config_data["bootloader_cfg"]} >> /etc/default/grub')
     
     # Installs drivers
-    #for package in config["drivers"]:
+    #for package in config_data["drivers"]:
     #    command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
     
     # Configure drivers [Check if config is empty and decide to run]
-    #command(f'sudo arch-chroot /{root_parition} sudo cp {config["drivers_cfg"]} >> /etc/mkinitcpio.conf')
+    #command(f'sudo arch-chroot /{root_parition} sudo cp {config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
     
     # Installs additional packages
-    for package in config["post_packages"]:
+    for package in config_data["post_packages"]:
         command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
     
     # Configures pacman hooks. [Check if hooks is empty or not and is nvidia]
     #command(f'sudo arch-chroot /{root_parition} sudo mkdir /etc/pacman.d/hooks')
-    #command(f'sudo arch-chroot /{root_parition} sudo cp {config["pacman_hooks"]} >> /etc/pacman.d/hooks/nvidia.hook')
+    #command(f'sudo arch-chroot /{root_parition} sudo cp {config_data["pacman_hooks"]} >> /etc/pacman.d/hooks/nvidia.hook')
 
     # Configure timezone
-    command(f'sudo arch-chroot /{root_parition} sudo timedatectl set-timezone {config["timezone"]}')
-    command(f'sudo arch-chroot /{root_parition} sudo ln -sf /usr/share/zoneinfo/{config["timezone"]} /etc/localtime')
+    command(f'sudo arch-chroot /{root_parition} sudo timedatectl set-timezone {config_data["timezone"]}')
+    command(f'sudo arch-chroot /{root_parition} sudo ln -sf /usr/share/zoneinfo/{config_data["timezone"]} /etc/localtime')
     command(f'sudo arch-chroot /{root_parition} sudo hwclock --systohc')
 
     # Configure locales
-    command(f'sudo arch-chroot /{root_parition} sudo echo "{config["locale"]}" >> /etc/locale.gen')
+    command(f'sudo arch-chroot /{root_parition} sudo echo "{config_data["locale"]}" >> /etc/locale.gen')
     command(f'sudo arch-chroot /{root_parition} sudo echo "LANG={config[locale]}" >> /etc/locale.conf')
     command(f'sudo arch-chroot /{root_parition} sudo locale-gen')
 
     # Configure hostname
-    command(f'sudo arch-chroot /{root_parition} sudo echo "{config["hostname"]}" >> /etc/hostname')
+    command(f'sudo arch-chroot /{root_parition} sudo echo "{config_data["hostname"]}" >> /etc/hostname')
 
     # Configure users
-    for user in config["users"]:
+    for user in config_data["users"]:
         command(f'sudo arch-chroot /{root_parition} sudo usermod -m {user}')
-        for group in config["groups"]:
+        for group in config_data["groups"]:
             command(f'sudo arch-chroot /{root_parition} sudo usermod -aG {group} {user}')
     
     # Enable system services
-    for service in config["system_services"]:
+    for service in config_data["system_services"]:
         command(f'sudo arch-chroot /{root_parition} sudo systemctl enable {service}')
     
     # Regenerate initramfs & grub configuration
