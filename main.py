@@ -9,7 +9,7 @@ import itertools
 # xFadedxShadows Configuration File.
 config = {
     'base': ['base', 'base-devel', 'linux-zen', 'linux-zen-headers', 'linux-firmware', 'sudo', 'nano', 'xdg-user-dirs', 'amd-ucode'],
-    'audio_subsystem': ['pipewire', 'lib32-pipewire', 'pipewire-pulse', 'pipewire-audio', 'pipewire-alsa', 'pipewire-jack', 'lib32-pipewire-jack'],
+    'audio_subsystem': ['pipewire', 'lib32-pipewire', 'pipewire-pulse', 'pipewire-audio', 'pipewire-alsa', 'pipewire-jack'],
     'network': ['networkmanager'],
     'bootloader': ['grub', 'efibootmgr'],
     'bootloader_cfg': 'configs/grub/nvidia',
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     # Configure users
     for user in config_data["users"]:
-        command(f'sudo arch-chroot {args.root_partition} sudo usermod -m -g users -G wheel,storage,power -s /bin/bash {user}')
+        command(f'sudo arch-chroot {args.root_partition} sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}')
         command(f'sudo arch-chroot {args.root_partition} sudo passwd {user}')
     
     # Enable system services
