@@ -27,7 +27,7 @@ config = {
 
 
 # Writes default configuration if not found.
-def write_config():
+def write_config(cfg):
     with open('config.cfg', 'w') as f:
         f.write(json.dumps(config, indent=4))
 
@@ -35,7 +35,7 @@ def write_config():
 # Reads a configuration
 def read_config(configuration):
     with open('config.cfg', 'r') as f:
-        json.load(f)
+        return json.load(f)
 
 
 # Chroots into root enviorment and runs a command.
