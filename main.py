@@ -11,21 +11,21 @@ config = ConfigParser()
 
 # xFadedxShadows Configuration File.
 config["xFadedxShadowsConfig"] = {
-    'base': ["base', 'base-devel', 'linux-zen', 'linux-zen-headers', 'linux-firmware', 'sudo', 'nano', 'xdg-user-dirs', 'amd-ucode"],
-    'audio_subsystem': ["pipewire', 'lib32-pipewire', 'pipewire-pulse', 'pipewire-audio', 'pipewire-alsa', 'pipewire-jack', 'lib32-pipewire-jack"],
-    'network': ["networkmanager"],
-    'bootloader': ["grub', 'efibootmgr"],
+    'base': ['base', 'base-devel', 'linux-zen', 'linux-zen-headers', 'linux-firmware', 'sudo', 'nano', 'xdg-user-dirs', 'amd-ucode'],
+    'audio_subsystem': ['pipewire', 'lib32-pipewire', 'pipewire-pulse', 'pipewire-audio', 'pipewire-alsa', 'pipewire-jack', 'lib32-pipewire-jack'],
+    'network': ['networkmanager'],
+    'bootloader': ['grub', 'efibootmgr'],
     'bootloader_cfg': 'configs/grub/nvidia',
-    'drivers': ["nvidia-dkms', 'libglvnd', 'nvidia-utils', 'opencl-nvidia', 'lib32-libglvnd', 'lib32-nvidia-utils', 'lib32-opencl-nvidia', 'nvidia-settings"],
+    'drivers': ['nvidia-dkms', 'libglvnd', 'nvidia-utils', 'opencl-nvidia', 'lib32-libglvnd', 'lib32-nvidia-utils', 'lib32-opencl-nvidia', 'nvidia-settings' ],
     'drivers_cfg': 'configs/mkinitcpio/nvidia.conf',
     'pacman_hooks': 'config/hooks/nvidia.hook',
-    'post_packages': ["firefox', 'discord', 'steam', 'yuzu', 'p7zip', 'unrar', 'transmission-gtk', 'htop', 'neofetch"],
+    'post_packages': ['firefox', 'discord', 'steam', 'yuzu', 'p7zip', 'unrar', 'transmission-gtk', 'htop', 'neofetch'],
     'timezone': 'US/Eastern',
     'locale': 'en_US.UTF-8',
     'hostname': 'null-desktop',
-    'users': ["xfadedxshadow"],
-    'groups': ["wheel' ,'storage', 'power"],
-    'system_services': ["NetworkManager', 'bluetooth"]
+    'users': ['xfadedxshadow'],
+    'groups': ['wheel' ,'storage', 'power'],
+    'system_services': ['NetworkManager', 'bluetooth']
 }
 
 
@@ -42,7 +42,6 @@ def read_config(configuration):
 
 # Chroots into root enviorment and runs a command.
 def command(command):
-    print(command)
     os.system(command)
 
 
