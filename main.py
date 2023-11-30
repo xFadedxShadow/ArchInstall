@@ -8,21 +8,65 @@ import itertools
 
 # xFadedxShadows Configuration File.
 config = {
-    'base': ['base', 'base-devel', 'linux-zen', 'linux-zen-headers', 'linux-firmware', 'sudo', 'nano', 'xdg-user-dirs', 'amd-ucode'],
-    'audio_subsystem': ['pipewire', 'lib32-pipewire', 'pipewire-pulse', 'pipewire-audio', 'pipewire-alsa', 'pipewire-jack'],
-    'network': ['networkmanager'],
-    'bootloader': ['grub', 'efibootmgr'],
-    'bootloader_cfg': 'configs/grub/nvidia',
-    'drivers': ['nvidia-dkms', 'libglvnd', 'nvidia-utils', 'opencl-nvidia', 'lib32-libglvnd', 'lib32-nvidia-utils', 'lib32-opencl-nvidia', 'nvidia-settings' ],
-    'drivers_cfg': 'configs/mkinitcpio/nvidia.conf',
-    'pacman_hooks': 'config/hooks/nvidia.hook',
-    'post_packages': ['firefox', 'discord', 'steam', 'yuzu', 'p7zip', 'unrar', 'transmission-gtk', 'htop', 'neofetch'],
-    'timezone': 'US/Eastern',
-    'locale': 'en_US.UTF-8',
-    'hostname': 'null-desktop',
-    'users': ['xfadedxshadow'],
-    'groups': ['wheel' ,'storage', 'power'],
-    'system_services': ['NetworkManager', 'bluetooth']
+    "base": [
+        "base",
+        "base-devel",
+        "linux-zen",
+        "linux-zen-headers",
+        "linux-firmware",
+        "sudo",
+        "nano",
+        "xdg-user-dirs",
+        "amd-ucode"
+    ],
+    "audio_subsystem": [
+        "pipewire",
+        "lib32-pipewire",
+        "pipewire-pulse",
+        "pipewire-audio",
+        "pipewire-alsa",
+        "pipewire-jack"
+    ],
+    "network": [
+        "networkmanager"
+    ],
+    "bootloader": [
+        "grub",
+        "efibootmgr"
+    ],
+    "drivers": [
+        "default"
+    ],
+    "bootloader_cfg": "default",
+    "drivers_cfg": "default",
+    "pacman_hooks": [
+        "default"
+    ],
+    "post_packages": [
+        "firefox",
+        "discord",
+        "steam",
+        "yuzu",
+        "p7zip",
+        "unrar",
+        "transmission-gtk",
+        "htop",
+        "neofetch"
+    ],
+    "timezone": "US/Eastern",
+    "locale": "en_US.UTF-8",
+    "hostname": "null-desktop",
+    "users": [
+        "xfadedxshadow"
+    ],
+    "groups": [
+        "wheel",
+        "storage",
+        "power"
+    ],
+    "system_services": [
+        "NetworkManager"
+    ]
 }
 
 
@@ -73,22 +117,27 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
     
     # Configure bootloader [Check if config is empty and decide to run]
-    #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["bootloader_cfg"]} >> /etc/default/grub')
+    if config_data["bootload_cfg"] != "default" or config_data["bootloader_cfg"] != None:
+        command(f'sudo arch-chroot {args.root_partition} sudo cp configs/grub/{config_data["bootloader_cfg"]} >> /etc/default/grub')
     
     # Installs drivers
-    #for package in config_data["drivers"]:
-    #    command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
+    if config_data["drivers"] != "default" or config_data["drivers"] != None:
+        for package in config_data["drivers"]:
+            command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Configure drivers [Check if config is empty and decide to run]
-    #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
+    if config_data["drivers_cfg"] != "default" or config_data["drivers_cfg"] != None:
+        command(f'sudo arch-chroot {args.root_partition} sudo cp config/mkinitcpio/{config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
     
     # Installs additional packages
     for package in config_data["post_packages"]:
         command(f'sudo arch-chroot {args.root_partition} sudo pacman -S {package}')
     
     # Configures pacman hooks. [Check if hooks is empty or not and is nvidia]
-    #command(f'sudo arch-chroot {args.root_partition} sudo mkdir /etc/pacman.d/hooks')
-    #command(f'sudo arch-chroot {args.root_partition} sudo cp {config_data["pacman_hooks"]} >> /etc/pacman.d/hooks/nvidia.hook')
+    if len(config_data["pacman_hooks"]) == 0:
+        command(f'sudo arch-chroot {args.root_partition} sudo mkdir /etc/pacman.d/hooks')
+        for hook in config_data["pacman_hooks"]:
+            command(f'sudo arch-chroot {args.root_partition} sudo cp configs/hooks/{hook} >> /etc/pacman.d/hooks/{hook}')
 
     # Configure timezone
     command(f'sudo arch-chroot {args.root_partition} sudo timedatectl set-timezone {config_data["timezone"]}')
@@ -106,7 +155,12 @@ if __name__ == '__main__':
     # Configure users
     for user in config_data["users"]:
         command(f'sudo arch-chroot {args.root_partition} sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}')
+        print(f'Enter a passwd for {user}.')
         command(f'sudo arch-chroot {args.root_partition} sudo passwd {user}')
+    
+    # Root passwd
+    print('Enter a passwd for root.')
+    command(f'sudo arch-chroot {args.root_partition} sudo passwd')
     
     # Enable system services
     for service in config_data["system_services"]:
