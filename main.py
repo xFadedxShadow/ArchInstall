@@ -43,7 +43,7 @@ def read_config(configuration):
 # Chroots into root enviorment and runs a command.
 def command(command):
         try:
-            subprocess.check_output(command, shell=True)
+            subprocess.check_output(command, shell=True).rstrip()
         except subprocess.CalledProcessError as error:
             print(error.output)
 
@@ -52,8 +52,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--root_partition")
     args = parser.parse_args()
-
-    args.root_partition = (args.root_partition).rstrip()
 
     write_config()
     read_config('config.cfg')
