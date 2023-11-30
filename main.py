@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import itertools
 import subprocess
 from configparser import ConfigParser
@@ -48,6 +49,10 @@ def command(command):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root_partition")
+    args = parser.parse_args()
+
     write_config()
     read_config('config.cfg')
     config_data = config["xFadedxShadowsConfig"]
@@ -57,64 +62,64 @@ if __name__ == '__main__':
         command(f'sudo pacstrap -K {package}')
     
     # Generate fstab
-    command(f'sudo genfstab -U /{root_parition} >> /{root_parition}/etc/fstab')
+    command(f'sudo genfstab -U /{args.root_partition} >> /{args.root_partition}/etc/fstab')
     
     # Installs audio subsystem
     for package in config_data["audio_subsystem"]:
-        command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
+        command(f'sudo arch-chroot /{args.root_partition} sudo pacman -S {package}')
     
     # Installs networking
     for package in config_data["network"]:
-        command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
+        command(f'sudo arch-chroot /{args.root_partition} sudo pacman -S {package}')
     
     # Installs bootloader
     for package in config_data["bootloader"]:
-        command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
+        command(f'sudo arch-chroot /{args.root_partition} sudo pacman -S {package}')
     
-    command(f'sudo arch-chroot /{root_parition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
+    command(f'sudo arch-chroot /{args.root_partition} sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
 
     
     # Configure bootloader [Check if config is empty and decide to run]
-    #command(f'sudo arch-chroot /{root_parition} sudo cp {config_data["bootloader_cfg"]} >> /etc/default/grub')
+    #command(f'sudo arch-chroot /{args.root_partition} sudo cp {config_data["bootloader_cfg"]} >> /etc/default/grub')
     
     # Installs drivers
     #for package in config_data["drivers"]:
-    #    command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
+    #    command(f'sudo arch-chroot /{args.root_partition} sudo pacman -S {package}')
     
     # Configure drivers [Check if config is empty and decide to run]
-    #command(f'sudo arch-chroot /{root_parition} sudo cp {config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
+    #command(f'sudo arch-chroot /{args.root_partition} sudo cp {config_data["drivers_cfg"]} >> /etc/mkinitcpio.conf')
     
     # Installs additional packages
     for package in config_data["post_packages"]:
-        command(f'sudo arch-chroot /{root_parition} sudo pacman -S {package}')
+        command(f'sudo arch-chroot /{args.root_partition} sudo pacman -S {package}')
     
     # Configures pacman hooks. [Check if hooks is empty or not and is nvidia]
-    #command(f'sudo arch-chroot /{root_parition} sudo mkdir /etc/pacman.d/hooks')
-    #command(f'sudo arch-chroot /{root_parition} sudo cp {config_data["pacman_hooks"]} >> /etc/pacman.d/hooks/nvidia.hook')
+    #command(f'sudo arch-chroot /{args.root_partition} sudo mkdir /etc/pacman.d/hooks')
+    #command(f'sudo arch-chroot /{args.root_partition} sudo cp {config_data["pacman_hooks"]} >> /etc/pacman.d/hooks/nvidia.hook')
 
     # Configure timezone
-    command(f'sudo arch-chroot /{root_parition} sudo timedatectl set-timezone {config_data["timezone"]}')
-    command(f'sudo arch-chroot /{root_parition} sudo ln -sf /usr/share/zoneinfo/{config_data["timezone"]} /etc/localtime')
-    command(f'sudo arch-chroot /{root_parition} sudo hwclock --systohc')
+    command(f'sudo arch-chroot /{args.root_partition} sudo timedatectl set-timezone {config_data["timezone"]}')
+    command(f'sudo arch-chroot /{args.root_partition} sudo ln -sf /usr/share/zoneinfo/{config_data["timezone"]} /etc/localtime')
+    command(f'sudo arch-chroot /{args.root_partition} sudo hwclock --systohc')
 
     # Configure locales
-    command(f'sudo arch-chroot /{root_parition} sudo echo "{config_data["locale"]}" >> /etc/locale.gen')
-    command(f'sudo arch-chroot /{root_parition} sudo echo "LANG={config[locale]}" >> /etc/locale.conf')
-    command(f'sudo arch-chroot /{root_parition} sudo locale-gen')
+    command(f'sudo arch-chroot /{args.root_partition} sudo echo "{config_data["locale"]}" >> /etc/locale.gen')
+    command(f'sudo arch-chroot /{args.root_partition} sudo echo "LANG={config[locale]}" >> /etc/locale.conf')
+    command(f'sudo arch-chroot /{args.root_partition} sudo locale-gen')
 
     # Configure hostname
-    command(f'sudo arch-chroot /{root_parition} sudo echo "{config_data["hostname"]}" >> /etc/hostname')
+    command(f'sudo arch-chroot /{args.root_partition} sudo echo "{config_data["hostname"]}" >> /etc/hostname')
 
     # Configure users
     for user in config_data["users"]:
-        command(f'sudo arch-chroot /{root_parition} sudo usermod -m {user}')
+        command(f'sudo arch-chroot /{args.root_partition} sudo usermod -m {user}')
         for group in config_data["groups"]:
-            command(f'sudo arch-chroot /{root_parition} sudo usermod -aG {group} {user}')
+            command(f'sudo arch-chroot /{args.root_partition} sudo usermod -aG {group} {user}')
     
     # Enable system services
     for service in config_data["system_services"]:
-        command(f'sudo arch-chroot /{root_parition} sudo systemctl enable {service}')
+        command(f'sudo arch-chroot /{args.root_partition} sudo systemctl enable {service}')
     
     # Regenerate initramfs & grub configuration
-    command(f'sudo arch-chroot /{root_parition} sudo mkinitcpio -P')
-    command(f'sudo arch-chroot /{root_parition} sudo grub-mkconfig -o /boot/grub/grub.cfg')
+    command(f'sudo arch-chroot /{args.root_partition} sudo mkinitcpio -P')
+    command(f'sudo arch-chroot /{args.root_partition} sudo grub-mkconfig -o /boot/grub/grub.cfg')
