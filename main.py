@@ -49,9 +49,11 @@ def command(command):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser()
     parser.add_argument("--root_partition")
     args = parser.parse_args()
+
+    args.root_partition = (args.root_partition).rstrip()
 
     write_config()
     read_config('config.cfg')
