@@ -82,7 +82,7 @@ def read_config(configuration):
 
 # Chroots into root enviorment and runs a command.
 def command(command):
-    os.system(f'/bin/bash -c {command}')
+    os.system(f'{command}')
 
 
 if __name__ == '__main__':
