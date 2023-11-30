@@ -39,7 +39,6 @@ config = {
     "bootloader_cfg": "default",
     "drivers_cfg": "default",
     "pacman_hooks": [
-        "default"
     ],
     "post_packages": [
         "firefox",
@@ -144,11 +143,12 @@ if __name__ == '__main__':
     command(f'sudo arch-chroot {args.root_partition} sudo hwclock --systohc')
 
     # Configure locales
-    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["locale"]}" >> /etc/locale.gen')
-    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "LANG={config["locale"]}" >> /etc/locale.conf')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["locale"]} UTF-8" >> /etc/locale.gen')
+    command(f'sudo arch-chroot {args.root_partition} sudo echo -e LANG="{config["locale"]}" >> /etc/locale.conf')
     command(f'sudo arch-chroot {args.root_partition} sudo locale-gen')
 
     # Configure hostname || Did not configure hostname
+    command(f'sudo arch-chroot {args.root_partition} sudo touch /etc/hostname')
     command(f'sudo arch-chroot {args.root_partition} sudo echo -e "{config_data["hostname"]}" >> /etc/hostname')
 
     # Configure users
