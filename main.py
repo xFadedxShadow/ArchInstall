@@ -42,6 +42,7 @@ def read_config(configuration):
 
 # Chroots into root enviorment and runs a command.
 def command(command):
+    print(command)
     os.system(command)
 
 
