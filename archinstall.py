@@ -28,14 +28,14 @@ def chroot_command(partition, command):
     try:
         subprocess.run(f'sudo arch-chroot {partition} {command}', shell=True, check=True)
     except subprocess.CalledProcessError as e:
-        print(e.output.decode())
+        print(e.output)
 
 # Runs a normal command.
 def command(command):
     try:
         subprocess.run(command, shell=True, check=True)
     except subprocess.CalledProcessError as e:
-        print(e.output.decode())
+        print(e.output)
 
 
 if __name__ == '__main__':
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
         # 2. Partition Disks and Format them.
 
-        # 3. Update pacman.conf & mirrors in live enviorment.
+        # 3. Update pacman.conf & mirrors in live enviorment. (Broken.)
         data = str(read_file('/etc/pacman.conf'))
         data.replace('#[multilib]', '[multilib]')
         data.replace('#Include = /etc/pacman.d/mirrorlist', 'Include = /etc/pacman.d/mirrorlist')
