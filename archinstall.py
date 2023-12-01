@@ -89,7 +89,7 @@ if __name__ == '__main__':
         data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
         data.replace('#Color', 'Color')
         write_file('/etc/pacman.conf', data)
-        command('sudo pacman -Syy && yes | sudo pacman -S reflector rsync curl')
+        command('sudo pacman -Syy && sudo pacman -S reflector rsync curl')
         command('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
         command('sudo pacman -Syy')
 
@@ -133,8 +133,8 @@ if __name__ == '__main__':
         command('sudo hwclock --systohc')
 
         # 13. Configure locales & hostname
-        command(f'sudo echo -e "{config["locale"]} UTF-8" >> /etc/locale.gen')
-        command(f'sudo echo -e "LANG={config["locale"]}" >> /etc/locale.conf')
+        command(f'sudo echo -e "{config["locale"]} UTF-8" > /etc/locale.gen')
+        command(f'sudo echo -e "LANG={config["locale"]}" > /etc/locale.conf')
         command('sudo locale-gen')
         command(f'sudo echo -e "{config["hostname"]}" >> /etc/hostname')
 
@@ -165,21 +165,17 @@ if __name__ == '__main__':
                 command(f'sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}')
                 print(f'Enter password for user: {user}')
                 command(f'sudo passwd {user}')
-        
-        # 17. Configure root user.
-        print('Enter password for user: root')
-        command('sudo passwd')
 
-        # 18. Install additional packages.
+        # 17. Install additional packages.
         if 'additional_packages' in config and len(config['additional_packages']) > 0:
             for package in config['additional_packages']:
                 command(f'sudo pacman -S {package}')
         
-        # 19. Enable system services
+        # 18. Enable system services
         if 'services' in config and len(config['services']) > 0:
             for service in config['services']:
                 command(f'sudo systemctl enable {service}')
         
-        # 20. Regenerate initramfs & bootloader config.
+        # 19. Regenerate initramfs & bootloader config.
         command('sudo mkinitcpio -P')
         command('sudo grub-mkconfig -o /boot/grub/grub.cfg')
