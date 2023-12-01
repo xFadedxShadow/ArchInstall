@@ -64,13 +64,15 @@ if __name__ == '__main__':
         "services": [],
     }
 
-    write_config('config.ini', default_config)
 
     # Loads either default or custom config.
     if (args.config) == None:
+        write_config('config.ini', default_config)
         config = load_config('config.ini')
+        print('Loaded "config.ini" configuration.')
     else:
         config = load_config(args.config)
+        print(f'Loaded "{args.config}" configuration.')
 
 
     if (args.post_install) == False:
@@ -80,33 +82,39 @@ if __name__ == '__main__':
         command('sudo timedatectl set-ntp true')
         command('sudo hwclock --systohc')
 
+
         # 2. Partition Disks and Format them.
 
-        # 3. Update pacman.conf & mirrors in live enviorment. (Broken.)
-        data = str(read_file('/etc/pacman.conf'))
-        data.replace('#[multilib]', '[multilib]')
-        data.replace('#Include = /etc/pacman.d/mirrorlist', 'Include = /etc/pacman.d/mirrorlist')
-        data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
-        data.replace('#Color', 'Color')
-        write_file('/etc/pacman.conf', data)
+
+        # 3. Update pacman.conf & mirrors in live enviorment.
+        data = str(read_file('pacman.conf'))
+        data = data.replace('#[multilib]\n#Include = /etc/pacman.d/mirrorlist', '[multilib]\nInclude = /etc/pacman.d/mirrorlist')
+        data = data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
+        data = data.replace('#Color', 'Color')
+        write_file('pacman.conf', data)
         command('sudo pacman -Syy && sudo pacman -S reflector rsync curl')
         command('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
         command('sudo pacman -Syy')
+
 
         # 4. Pacstrap minimum packages
         for package in config['base']:
             command(f'sudo pacstrap -K {args.root_partition} {package}')
         
+
         # 5. Update pacman.conf & mirrors for install.
         command(f'sudo cp /etc/pacman.conf {args.root_partition}/etc/pacman.conf')
         command(f'sudo cp /etc/pacman.d/mirrorlist {args.root_partition}/etc/pacman.d/mirrorlist')
         
+
         # 6. Install network-manager
         for package in config['network-manager']:
             command(f'sudo pacstrap -K {args.root_partition} {package}')
         
+
         # 7. Generate fstab
         command(f'sudo genfstab -U {args.root_partition} >> {args.root_partition}/etc/fstab')
+
 
         # 8. Install bootloader
         for package in config['bootloader']:
@@ -114,13 +122,16 @@ if __name__ == '__main__':
         
         chroot_command(args.root_partition, 'sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
 
+
         # 9. Configure root account.
         print('Enter "root" account passwd. (Do not mess up.)')
         chroot_command(args.root_partition, 'sudo passwd')
 
+
         # 10. Enable system network-manager service.
         for service in config['network-manager-services']:
             chroot_command(args.root_partition, f'sudo systemctl enable {service}')
+
 
         # 11. Generate mkinitramfs & bootloader config
         chroot_command(args.root_partition, 'sudo mkinitcpio -P')
@@ -132,6 +143,7 @@ if __name__ == '__main__':
         command('sudo timedatectl set-ntp true')
         command('sudo hwclock --systohc')
 
+
         # 13. Configure locales & hostname
         command(f'sudo echo -e "{config["locale"]} UTF-8" > /etc/locale.gen')
         command(f'sudo echo -e "LANG={config["locale"]}" > /etc/locale.conf')
@@ -141,10 +153,12 @@ if __name__ == '__main__':
         command('sudo pacman -Syy')
         command('sudo pacman -Syu')
 
+
         # 14. Install audio subsystem
         if 'audio_subsystem' in config and len(config['audio_subsystem']) > 0:
             for package in config['audio_subsystem']:
                 command(f'sudo pacman -S {package}')
+
 
         # 15. Install Drivers if there are any
         if 'drivers' in config and len(config['drivers']) > 0:
@@ -159,6 +173,7 @@ if __name__ == '__main__':
                     command('sudo mkdir /etc/pacman.d/hooks')
                     command('sudo cp configs/hooks/nvidia.hook /etc/pacman.d/hooks/nvidia.hook')
         
+
         # 16. Configure users
         if 'users' in config and len(config['users']) > 0:
             for user in config['users']:
@@ -166,16 +181,19 @@ if __name__ == '__main__':
                 print(f'Enter password for user: {user}')
                 command(f'sudo passwd {user}')
 
+
         # 17. Install additional packages.
         if 'additional_packages' in config and len(config['additional_packages']) > 0:
             for package in config['additional_packages']:
                 command(f'sudo pacman -S {package}')
         
+
         # 18. Enable system services
         if 'services' in config and len(config['services']) > 0:
             for service in config['services']:
                 command(f'sudo systemctl enable {service}')
         
+
         # 19. Regenerate initramfs & bootloader config.
         command('sudo mkinitcpio -P')
         command('sudo grub-mkconfig -o /boot/grub/grub.cfg')
