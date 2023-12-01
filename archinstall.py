@@ -49,12 +49,19 @@ if __name__ == '__main__':
 
     # Default Configuration.
     default_config = {
-        "base": ["base", "base-devel", "linux", "linux-headers", "linux-firmware"],
+        "base": ["base", "base-devel", "linux", "linux-headers", "linux-firmware", "xdg-user-dirs"],
         "network-manager": ["networkmanager"],
         "timezone": "US/Eastern",
-        "locales": "en_US.UTF-8",
+        "locale": "en_US.UTF-8",
         "hostname": "archlinux",
-        "bootloader": ["grub", "efibootmgr"]
+        "bootloader": ["grub", "efibootmgr"],
+        "network-manager-services": ["NetworkManager"],
+        "drivers": [],
+        "driver_cfg": "",
+        "audio_subsystem": [],
+        "users": [],
+        "additional_packages": [],
+        "services": [],
     }
 
     write_config('config.ini', default_config)
@@ -73,7 +80,9 @@ if __name__ == '__main__':
         command('sudo timedatectl set-ntp true')
         command('sudo hwclock --systohc')
 
-        # 2. Update pacman.conf & mirrors in live enviorment.
+        # 2. Partition Disks and Format them.
+
+        # 3. Update pacman.conf & mirrors in live enviorment.
         data = str(read_file('/etc/pacman.conf'))
         data.replace('#[multilib]', '[multilib]')
         data.replace('#Include = /etc/pacman.d/mirrorlist', 'Include = /etc/pacman.d/mirrorlist')
@@ -84,42 +93,93 @@ if __name__ == '__main__':
         command('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
         command('sudo pacman -Syy')
 
-        # 3. Partition Disks and Format them.
-
         # 4. Pacstrap minimum packages
         for package in config['base']:
             command(f'sudo pacstrap -K {args.root_partition} {package}')
         
-        # 5. Install network-manager
+        # 5. Update pacman.conf & mirrors for install.
+        command(f'sudo cp /etc/pacman.conf {args.root_partition}/etc/pacman.conf')
+        command(f'sudo cp /etc/pacman.d/mirrorlist {args.root_partition}/etc/pacman.d/mirrorlist')
+        
+        # 6. Install network-manager
         for package in config['network-manager']:
             command(f'sudo pacstrap -K {args.root_partition} {package}')
         
-        # 6. Generate fstab
+        # 7. Generate fstab
         command(f'sudo genfstab -U {args.root_partition} >> {args.root_partition}/etc/fstab')
 
-        # 7. Install bootloader
+        # 8. Install bootloader
         for package in config['bootloader']:
             chroot_command(args.root_partition, f'sudo pacman -S {package}')
         
         chroot_command(args.root_partition, 'sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB')
 
-        # 8. Configure root account.
+        # 9. Configure root account.
         print('Enter "root" account passwd. (Do not mess up.)')
         chroot_command(args.root_partition, 'sudo passwd')
 
-        # 9. Generate mkinitramfs & bootloader config
+        # 10. Enable system network-manager service.
+        for service in config['network-manager-services']:
+            chroot_command(args.root_partition, f'sudo systemctl enable {service}')
+
+        # 11. Generate mkinitramfs & bootloader config
         chroot_command(args.root_partition, 'sudo mkinitcpio -P')
         chroot_command(args.root_partition, 'sudo grub-mkconfig -o /boot/grub/grub.cfg')
     
     else:
-        print("Post Installation Process.")
+        # 12. Configure timezone & hwclock
+        command(f'sudo timedatectl set-timezone {config["timezone"]}')
+        command('sudo timedatectl set-ntp true')
+        command('sudo hwclock --systohc')
 
+        # 13. Configure locales & hostname
+        command(f'sudo echo -e "{config["locale"]} UTF-8" >> /etc/locale.gen')
+        command(f'sudo echo -e "LANG={config["locale"]}" >> /etc/locale.conf')
+        command('sudo locale-gen')
+        command(f'sudo echo -e "{config["hostname"]}" >> /etc/hostname')
 
+        command('sudo pacman -Syy')
+        command('sudo pacman -Syu')
 
+        # 14. Install audio subsystem
+        if 'audio_subsystem' in config and len(config['audio_subsystem']) > 0:
+            for package in config['audio_subsystem']:
+                command(f'sudo pacman -S {package}')
 
+        # 15. Install Drivers if there are any
+        if 'drivers' in config and len(config['drivers']) > 0:
+            for package in config['drivers']:
+                command(f'sudo pacman -S {package}')
+            
+            # 15.1. Configure system to use new driver.
+            if 'driver_cfg' in config and len(config['driver_cfg']) > 0:
+                if config['driver_cfg'] == 'nvidia':
+                    command('sudo cp configs/mkinitcpio/nvidia /etc/mkinitcpio.conf')
+                    command('sudo cp configs/grub/nvidia.cfg /etc/default/grub')
+                    command('sudo mkdir /etc/pacman.d/hooks')
+                    command('sudo cp configs/hooks/nvidia.hook /etc/pacman.d/hooks/nvidia.hook')
+        
+        # 16. Configure users
+        if 'users' in config and len(config['users']) > 0:
+            for user in config['users']:
+                command(f'sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}')
+                print(f'Enter password for user: {user}')
+                command(f'sudo passwd {user}')
+        
+        # 17. Configure root user.
+        print('Enter password for user: root')
+        command('sudo passwd')
 
-    # How to check if any driver packages exist in config file.
-    #if 'drivers' in config and len(config['drivers']) > 0:
-    #    print(f'Driver Packages Loaded. | {len(config["drivers"])}')
-    #else:
-    #    print("No driver packages!")d
+        # 18. Install additional packages.
+        if 'additional_packages' in config and len(config['additional_packages']) > 0:
+            for package in config['additional_packages']:
+                command(f'sudo pacman -S {package}')
+        
+        # 19. Enable system services
+        if 'services' in config and len(config['services']) > 0:
+            for service in config['services']:
+                command(f'sudo systemctl enable {service}')
+        
+        # 20. Regenerate initramfs & bootloader config.
+        command('sudo mkinitcpio -P')
+        command('sudo grub-mkconfig -o /boot/grub/grub.cfg')
