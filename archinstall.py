@@ -108,7 +108,8 @@ if __name__ == '__main__':
         chroot_command(args.root_partition, 'sudo passwd')
 
         # 9. Generate mkinitramfs & bootloader config
-        chroot_command(args.root_partition, f'sudo mkinitcpio -P && sudo grub-mkconfig -o /boot/grub/grub.cfg')
+        chroot_command(args.root_partition, 'sudo mkinitcpio -P')
+        chroot_command(args.root_partition, 'sudo grub-mkconfig -o /boot/grub/grub.cfg')
     
     else:
         print("Post Installation Process.")
