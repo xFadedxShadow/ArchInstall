@@ -3,6 +3,10 @@ Script that installs archlinux based on a json configuration file!
 
 Major customization options will be included soon.
 
+# Tasks
+- [ ] Add support for disk partition & formatting.
+- So far disk partition and formatting is not included in this script so you will have to partition manually before you run the script.
+
 ## Requirements
 Requirements for this project are listed [here](https://github.com/xFadedxShadow/ArchInstall/wiki#requirements) in the wiki.
 
@@ -62,7 +66,3 @@ python archinstall.py {root_partition} --config {config_file} --post_install
 ```
 
 - Learn more about creating a customized configuration file [here](https://github.com/xFadedxShadow/ArchInstall/wiki#creating-a-custom-configuration-insights) in the wiki.
-
-# Tasks
-- [ ] Add support for disk partition & formatting.
-- So far disk partition and formatting is not included in this script so you will have to partition manually before you run the script.
