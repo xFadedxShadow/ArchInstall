@@ -28,7 +28,7 @@ python archinstall.py {root_partition} --config {config_file}
 python archinstall.py {root_partition} --config {config_file} --post_install
 ```
 
-## Default Configuration Template.
+## Default JSON Configuration Template.
 ```json
 {
     "base": [
