@@ -19,3 +19,36 @@ Requirements for this project are listed [here](https://github.com/xFadedxShadow
 
 - Load a configuration file for Post-Installation.
 ```python archinstall.py {root_partition} --config {config_file} --post_install```
+
+## Default Configuration Template.
+```
+{
+    "base": [
+        "base",
+        "base-devel",
+        "linux",
+        "linux-headers",
+        "linux-firmware",
+        "xdg-user-dirs"
+    ],
+    "network-manager": [
+        "networkmanager"
+    ],
+    "timezone": "US/Eastern",
+    "locale": "en_US.UTF-8",
+    "hostname": "archlinux",
+    "bootloader": [
+        "grub",
+        "efibootmgr"
+    ],
+    "network-manager-services": [
+        "NetworkManager"
+    ],
+    "drivers": [],
+    "driver_cfg": "",
+    "audio_subsystem": [],
+    "users": [],
+    "additional_packages": [],
+    "services": []
+}
+```
