@@ -61,7 +61,7 @@ python archinstall.py {root_partition} --config {config_file} --post_install
 }
 ```
 
-- Learn more about creating a customized configuration file [here]() in the wiki
+- Learn more about creating a customized configuration file [here](https://github.com/xFadedxShadow/ArchInstall/wiki#creating-a-custom-configuration-insights) in the wiki
 
 # Tasks
 - [ ] Add support for disk partition & formatting.
