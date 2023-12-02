@@ -8,7 +8,7 @@ Major customization options will be included soon.
 - So far disk partition and formatting is not included in this script so you will have to partition manually before you run the script.
 
 - [ ] Add pre-defined configurations for desktop enviorments.
--So far this script does not include any configuration presets for desktop enviorments.
+- So far this script does not include any configuration presets for desktop enviorments.
 
 ## Requirements
 Requirements for this project are listed [here](https://github.com/xFadedxShadow/ArchInstall/wiki#requirements) in the wiki.
