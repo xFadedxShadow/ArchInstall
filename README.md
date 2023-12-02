@@ -60,3 +60,7 @@ python archinstall.py {root_partition} --config {config_file} --post_install
     "services": []
 }
 ```
+
+# Tasks
+- [ ] Add support for disk partition & formatting.
+- So far disk partition and formatting is not included in this script so you will have to partition manually before you run the script.
