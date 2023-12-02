@@ -1,6 +1,8 @@
 # ArchInstall
 Script that installs archlinux based on a json configuration file!
 
+Major customization options will be included soon.
+
 ## Requirements
 Requirements for this project are listed [here](https://github.com/xFadedxShadow/ArchInstall/wiki#requirements) in the wiki.
 
