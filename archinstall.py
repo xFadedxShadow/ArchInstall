@@ -38,6 +38,27 @@ def command(command):
         print(e.output)
 
 
+# Update timezone information.
+def update_timezone(timezone):
+    command(f'sudo timedatectl set-timezone {timezone}')
+    command('sudo timedatectl set-ntp true')
+    command('sudo hwclock --systohc')
+
+# Update pacman mirrors & conf.
+def update_mirrors():
+    command('sudo pacman -Syy && sudo pacman -S reflector rsync curl')
+    command('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
+    command('sudo pacman -Syy')
+
+# Update pacman.conf
+def update_pacman_conf():
+    data = str(read_file('/etc/pacman.conf'))
+    data = data.replace('#[multilib]\n#Include = /etc/pacman.d/mirrorlist', '[multilib]\nInclude = /etc/pacman.d/mirrorlist')
+    data = data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
+    data = data.replace('#Color', 'Color')
+    write_file('/etc/pacman.conf', data)
+
+
 if __name__ == '__main__':
     # Defines arguments.
     parser = argparse.ArgumentParser()
@@ -77,27 +98,19 @@ if __name__ == '__main__':
 
     if (args.post_install) == False:
 
-        # 1. Update system clock for live enviorment.
-        command(f'sudo timedatectl set-timezone {config["timezone"]}')
-        command('sudo timedatectl set-ntp true')
-        command('sudo hwclock --systohc')
+        # 1. Update system clock for live enviorment - from ['timezone']
+        update_timezone(config['timezone'])
 
 
         # 2. Partition Disks and Format them.
 
 
         # 3. Update pacman.conf & mirrors in live enviorment.
-        data = str(read_file('/etc/pacman.conf'))
-        data = data.replace('#[multilib]\n#Include = /etc/pacman.d/mirrorlist', '[multilib]\nInclude = /etc/pacman.d/mirrorlist')
-        data = data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
-        data = data.replace('#Color', 'Color')
-        write_file('/etc/pacman.conf', data)
-        command('sudo pacman -Syy && sudo pacman -S reflector rsync curl')
-        command('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
-        command('sudo pacman -Syy')
+        update_pacman_conf()
+        update_mirrors()
 
 
-        # 4. Pacstrap minimum packages
+        # 4. Pacstrap packages - from ["base"]
         for package in config['base']:
             command(f'sudo pacstrap -K {args.root_partition} {package}')
         
@@ -107,7 +120,7 @@ if __name__ == '__main__':
         command(f'sudo cp /etc/pacman.d/mirrorlist {args.root_partition}/etc/pacman.d/mirrorlist')
         
 
-        # 6. Install network-manager
+        # 6. Install network-manager - from ['network-manager']
         for package in config['network-manager']:
             command(f'sudo pacstrap -K {args.root_partition} {package}')
         
@@ -116,7 +129,7 @@ if __name__ == '__main__':
         command(f'sudo genfstab -U {args.root_partition} >> {args.root_partition}/etc/fstab')
 
 
-        # 8. Install bootloader
+        # 8. Install bootloader - from ['bootloader']
         for package in config['bootloader']:
             chroot_command(args.root_partition, f'sudo pacman -S {package}')
         
@@ -128,7 +141,7 @@ if __name__ == '__main__':
         chroot_command(args.root_partition, 'sudo passwd')
 
 
-        # 10. Enable system network-manager service.
+        # 10. Enable system network-manager service. - from ['network-manager-services']
         for service in config['network-manager-services']:
             chroot_command(args.root_partition, f'sudo systemctl enable {service}')
 
@@ -138,13 +151,12 @@ if __name__ == '__main__':
         chroot_command(args.root_partition, 'sudo grub-mkconfig -o /boot/grub/grub.cfg')
     
     else:
-        # 12. Configure timezone & hwclock
-        command(f'sudo timedatectl set-timezone {config["timezone"]}')
-        command('sudo timedatectl set-ntp true')
-        command('sudo hwclock --systohc')
+
+        # 12. Configure timezone & hwclock - from ['timezone']
+        update_timezone(config['timezone'])
 
 
-        # 13. Configure locales & hostname
+        # 13. Configure locales & hostname - from ['locale'] & ['hostname']
         command(f'sudo echo -e "{config["locale"]} UTF-8" > /etc/locale.gen')
         command(f'sudo echo -e "LANG={config["locale"]}" > /etc/locale.conf')
         command('sudo locale-gen')
@@ -154,18 +166,18 @@ if __name__ == '__main__':
         command('sudo pacman -Syu')
 
 
-        # 14. Install audio subsystem
+        # 14. Install audio subsystem - from ['audio_subsystem']
         if 'audio_subsystem' in config and len(config['audio_subsystem']) > 0:
             for package in config['audio_subsystem']:
                 command(f'sudo pacman -S {package}')
 
 
-        # 15. Install Drivers if there are any
+        # 15. Install Drivers if there are any - from ['drivers']
         if 'drivers' in config and len(config['drivers']) > 0:
             for package in config['drivers']:
                 command(f'sudo pacman -S {package}')
             
-            # 15.1. Configure system to use new driver.
+            # 15.1. Configure system to use new driver - from ['driver_cfg']
             if 'driver_cfg' in config and len(config['driver_cfg']) > 0:
                 if config['driver_cfg'] == 'nvidia':
                     command('sudo cp configs/mkinitcpio/nvidia /etc/mkinitcpio.conf')
@@ -174,7 +186,7 @@ if __name__ == '__main__':
                     command('sudo cp configs/hooks/nvidia.hook /etc/pacman.d/hooks/nvidia.hook')
         
 
-        # 16. Configure users
+        # 16. Configure users - from ['users']
         if 'users' in config and len(config['users']) > 0:
             for user in config['users']:
                 command(f'sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}')
@@ -182,13 +194,13 @@ if __name__ == '__main__':
                 command(f'sudo passwd {user}')
 
 
-        # 17. Install additional packages.
+        # 17. Install additional packages - from ['additional_packages']
         if 'additional_packages' in config and len(config['additional_packages']) > 0:
             for package in config['additional_packages']:
                 command(f'sudo pacman -S {package}')
         
 
-        # 18. Enable system services
+        # 18. Enable system services - from ['services']
         if 'services' in config and len(config['services']) > 0:
             for service in config['services']:
                 command(f'sudo systemctl enable {service}')
