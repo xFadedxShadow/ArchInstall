@@ -21,7 +21,7 @@ Requirements for this project are listed [here](https://github.com/xFadedxShadow
 ```python archinstall.py {root_partition} --config {config_file} --post_install```
 
 ## Default Configuration Template.
-```
+```json
 {
     "base": [
         "base",
