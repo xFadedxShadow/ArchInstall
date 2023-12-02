@@ -87,11 +87,11 @@ if __name__ == '__main__':
 
 
         # 3. Update pacman.conf & mirrors in live enviorment.
-        data = str(read_file('pacman.conf'))
+        data = str(read_file('/etc/pacman.conf'))
         data = data.replace('#[multilib]\n#Include = /etc/pacman.d/mirrorlist', '[multilib]\nInclude = /etc/pacman.d/mirrorlist')
         data = data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
         data = data.replace('#Color', 'Color')
-        write_file('pacman.conf', data)
+        write_file('/etc/pacman.conf', data)
         command('sudo pacman -Syy && sudo pacman -S reflector rsync curl')
         command('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
         command('sudo pacman -Syy')
