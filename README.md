@@ -8,17 +8,25 @@ Requirements for this project are listed [here](https://github.com/xFadedxShadow
 
 ## Usage
 - Pre-Installation.
-```python archinstall.py {root_partition}```
+```python
+python archinstall.py {root_partition}
+```
 
 - Post-Installation
-```python archinstall.py {root_partition} --post_install```
+```python
+python archinstall.py {root_partition} --post_install
+```
 
 ### Optional Arguments
 - Load a configuration file for Pre-Installation.
-```python archinstall.py {root_partition} --config {config_file}```
+```python
+python archinstall.py {root_partition} --config {config_file}
+```
 
 - Load a configuration file for Post-Installation.
-```python archinstall.py {root_partition} --config {config_file} --post_install```
+```python
+python archinstall.py {root_partition} --config {config_file} --post_install
+```
 
 ## Default Configuration Template.
 ```json
