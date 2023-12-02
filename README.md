@@ -6,6 +6,7 @@ Major customization options will be included soon.
 # Tasks
 - [ ] Add support for disk partition & formatting.
 - So far disk partition and formatting is not included in this script so you will have to partition manually before you run the script.
+
 - [ ] Add pre-defined configuration for desktop enviorments.
 -So far this script does not include any configuration presets for desktop enviorments.
 
