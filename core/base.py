@@ -13,7 +13,7 @@ class CommandManager:
         except Exception as e:
             print(e.output)
     
-    def chroot_command(root_point = None, command):
+    def chroot_command(root_point = None, command = None):
         if type(root_point) != str or type(root_point) == None:
             raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
 
