@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
         SystemConfig.config_users('/mnt', config['users']) # Configures Users
 
-        PackageManager.chroot_install('/mnt' ,config['additional_packages']) # Install additional packages on top of base system
+        PackageManager.chroot_install('/mnt', config['additional_packages']) # Install additional packages on top of base system
 
         SystemConfig.config_grub('/mnt', '/boot/efi') # Installs GRUB
 
