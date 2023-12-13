@@ -12,14 +12,14 @@ from core.base import PackageManager, ConfigManager, SystemConfig
 def define_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help='Select a customized configuration.')
-    args = parser.parse_args()
+    return parser.parse_args()
 
-
-def main():
-    pass
 
 
 if __name__ == '__main__':
+
+    args = define_arguments()
+
     if (args.config) == None:
         config = ConfigManager.load_config('configs/default.json')
         print('Loaded "configs/default.json" configuration.')
