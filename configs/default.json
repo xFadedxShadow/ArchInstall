@@ -1,0 +1,29 @@
+{
+    "base": [
+        "base",
+        "base-devel",
+        "linux",
+        "linux-headers",
+        "linux-firmware",
+        "xdg-user-dirs",
+        "networkmanager",
+        "sudo",
+        "nano",
+        "python",
+        "bash-completion",
+        "grub",
+        "efibootmgr"
+    ],
+    "timezone": "US/Eastern",
+    "locale": "en_US.UTF-8",
+    "hostname": "archlinux",
+    "users": [
+        "xFadedxShadow"
+    ],
+    "additional_packages": [
+        "neofetch"
+    ],
+    "services": [
+        "NetworkManager.service"
+    ]
+}
