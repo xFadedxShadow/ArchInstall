@@ -5,7 +5,7 @@ import json
 import argparse
 import subprocess
 
-from core.base import PackageManager, ConfigManager, SystemConfig
+from core.base import PackageManager, ConfigManager, SystemConfig, CommandManager
 
 
 # Define arguments
