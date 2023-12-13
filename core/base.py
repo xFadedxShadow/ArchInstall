@@ -11,7 +11,7 @@ class CommandManager:
         try:
             subprocess.run(command)
         except Exception as e:
-            print(e.output)
+            print(e)
     
     def chroot_command(root_point = None, command = None):
         if type(root_point) != str or type(root_point) == None:
@@ -133,12 +133,6 @@ class SystemConfig:
         if type(root_point) != str or type(root_point) == None:
             raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
 
-        elif os.path.exists(root_point) == False:
-            raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
-
-        if type(timezone) != str or type(timezone) == None:
-            raise TypeError(f"Timezone: '{timezone}' argument must be type of str.")
-
 
         CommandManager.chroot_command(root_point, f"sudo timedatectl set-timezone {timezone}")
         CommandManager.chroot_command(root_point, "sudo timedatectl set-ntp true")
@@ -146,12 +140,6 @@ class SystemConfig:
     
 
     def config_locales(root_point = None, locale = None):
-        if type(root_point) != str or type(root_point) == None:
-            raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
-
-        elif os.path.exists(root_point) == False:
-            raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
-
         if type(locale) != str or type(locale) == None:
             raise TypeError(f"Locale: '{locale}' argument must be of type str.")
 
@@ -161,12 +149,6 @@ class SystemConfig:
 
 
     def config_hostname(root_point = None, hostname = None):
-        if type(root_point) != str or type(root_point) == None:
-            raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
-
-        elif os.path.exists(root_point) == False:
-            raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
-
         if type(hostname) != str or type(hostname) == None:
             raise TypeError(f"Hostname: '{hostname}' must be of type str.")
         
@@ -175,12 +157,6 @@ class SystemConfig:
 
 
     def config_users(root_point = None ,users = None):
-        if type(root_point) != str or type(root_point) == None:
-            raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
-
-        elif os.path.exists(root_point) == False:
-            raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
-
         if type(users) != list or type(users) == None:
             raise TypeError(f"Users: '{users}' must be of type list.")
         
@@ -195,12 +171,6 @@ class SystemConfig:
 
 
     def enable_services(root_point = None, services = None):
-        if type(root_point) != str or type(root_point) == None:
-            raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
-
-        elif os.path.exists(root_point) == False:
-            raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
-
         if type(services) != list or type(services) == None:
             raise TypeError(f"Services: '{services}' argument must be type of list.")
         
@@ -210,13 +180,6 @@ class SystemConfig:
     
 
     def config_grub(root_point = None ,efi_mount_point = None):
-        if type(root_point) != str or type(root_point) == None:
-            raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
-
-        elif os.path.exists(root_point) == False:
-            raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
-
-
         if type(efi_mount_point) != str or type(efi_mount_point) == None:
             raise TypeError(f"EFI Boot Mount Point: '{efi_mount_point}' argument must be type of str.")
 
