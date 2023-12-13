@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     PackageManager.pacstrap_install('/mnt', config['base']) # Install base arch system
 
-    subprocess.run("sudo genfstab -U /mnt >> /mnt/etc/fstab") # Generate fstab
+    subprocess.run("sudo genfstab -U /mnt >> /mnt/etc/fstab", shell=True) # Generate fstab
 
     PackageManager.chroot_install('/mnt', config['additional_packages']) # Install additional packages on top of base system
 
