@@ -28,23 +28,23 @@ if __name__ == '__main__':
         print(f'Loaded "{args.config}" configuration.')
 
 
-    PackageManager.pacstrap_install('/', config['base']) # Install base arch system
+    PackageManager.pacstrap_install('/mnt', config['base']) # Install base arch system
 
-    PackageManager.chroot_install('/', config['additional_packages']) # Install additional packages on top of base system
+    PackageManager.chroot_install('/mnt', config['additional_packages']) # Install additional packages on top of base system
 
     # PackageManager.chroot_uninstall() | Uninstall packages from base system
 
-    SystemConfig.config_timezone('/', config['timezone']) # Configure timezone
+    SystemConfig.config_timezone('/mnt', config['timezone']) # Configure timezone
 
-    SystemConfig.config_locales('/', config['locale']) # Configure locales
+    SystemConfig.config_locales('/mnt', config['locale']) # Configure locales
 
-    SystemConfig.config_hostname('/', config['hostname']) # Configure hostname
+    SystemConfig.config_hostname('/mnt', config['hostname']) # Configure hostname
 
-    SystemConfig.config_users('/', config['users']) # Configures Users
+    SystemConfig.config_users('/mnt', config['users']) # Configures Users
 
-    SystemConfig.config_grub('/', '/boot/efi') # Installs GRUB
+    SystemConfig.config_grub('/mnt', '/boot/efi') # Installs GRUB
 
-    SystemConfig.enable_services('/', config['services']) # Configure services while booted into OS
+    SystemConfig.enable_services('/mnt', config['services']) # Configure services while booted into OS
 
     # PackageManager.install() | Install packages while booted into OS
 
