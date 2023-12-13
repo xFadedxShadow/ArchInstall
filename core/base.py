@@ -14,7 +14,7 @@ class CommandManager:
         elif os.path.exists(root_point) == False:
             raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
         
-        print(f"Mount point")
+        print(f"Mount point: {root_point} | Command: {command}")
 
         subprocess.run(f"sudo arch-chroot {root_point} {command}", shell=True)
 
