@@ -7,6 +7,16 @@ import subprocess
 
 
 class CommandManager:
+    def run(command = None):
+        if type(command) != str or type(command) == None:
+            raise TypeError(f"Command: '{command}' must be of type str")
+        
+        output = subprocess.run(command, shell=True)
+
+        if (output.returncode == 1):
+            raise ChildProcessError(f"Command: '{command}' did not execute correctly.")
+
+
     def chroot_command(root_point = None, command = None):
         if type(root_point) != str or type(root_point) == None:
             raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
@@ -124,32 +134,31 @@ class SystemConfig:
         with open(_file, 'w') as f : return f.write(_data)
 
 
-    def config_timezone(root_point = None, timezone = None):
-        if type(root_point) != str or type(root_point) == None:
-            raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
+    def config_timezone(timezone = None):
+        if type(timezone) != str or type(timezone) == None:
+            raise TypeError(f"Timezone: '{timezone}' must be type str.")
 
-
-        CommandManager.chroot_command(root_point, f"sudo timedatectl set-timezone {timezone}")
-        CommandManager.chroot_command(root_point, "sudo timedatectl set-ntp true")
-        CommandManager.chroot_command(root_point, f"sudo hwclock --systohc")
+        CommandManager.run(f"sudo timedatectl set-timezone {timezone}")
+        CommandManager.run("sudo timedatectl set-ntp true")
+        CommandManager.run(f"sudo hwclock --systohc")
     
 
-    def config_locales(root_point = None, locale = None):
+    def config_locales(locale = None):
         if type(locale) != str or type(locale) == None:
             raise TypeError(f"Locale: '{locale}' argument must be of type str.")
 
 
-        CommandManager.chroot_command(root_point, f"sudo echo -e '{locale} UTF-8' > /etc/locale.gen")
-        CommandManager.chroot_command(root_point, f"sudo echo -e 'LANG={locale}' > /etc/locale.conf")
-        CommandManager.chroot_command(root_point, "sudo locale-gen")
+        CommandManager.run(f"sudo echo -e '{locale} UTF-8' > /etc/locale.gen")
+        CommandManager.run(f"sudo echo -e 'LANG={locale}' > /etc/locale.conf")
+        CommandManager.run("sudo locale-gen")
 
 
-    def config_hostname(root_point = None, hostname = None):
+    def config_hostname(hostname = None):
         if type(hostname) != str or type(hostname) == None:
             raise TypeError(f"Hostname: '{hostname}' must be of type str.")
         
 
-        CommandManager.chroot_command(root_point, f"sudo echo -e '{hostname}' >> /etc/hostname")
+        CommandManager.run(f"sudo echo -e '{hostname}' >> /etc/hostname")
 
 
     def config_users(root_point = None ,users = None):

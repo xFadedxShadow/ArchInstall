@@ -6,24 +6,31 @@
         "linux-headers",
         "linux-firmware",
         "xdg-user-dirs",
+        "dosfstools",
+        "e2fsprogs",
+        "exfatprogs",
+        "btrfs-progs",
         "networkmanager",
-        "sudo",
         "nano",
-        "python",
         "bash-completion",
         "grub",
         "efibootmgr"
     ],
-    "timezone": "US/Eastern",
-    "locale": "en_US.UTF-8",
-    "hostname": "archlinux",
     "users": [
         "xFadedxShadow"
     ],
     "additional_packages": [
-        "neofetch"
+        "xorg-server",
+        "plasma-desktop",
+        "plasma-meta",
+        "dolphin",
+        "konsole"
     ],
     "services": [
-        "NetworkManager.service"
-    ]
+        "NetworkManager.service",
+        "sddm.service"
+    ],
+    "timezone": "US/Eastern",
+    "locale": "en_US.UTF-8",
+    "hostname": "archlinux"
 }

@@ -12,6 +12,7 @@ from core.base import PackageManager, ConfigManager, SystemConfig, CommandManage
 def define_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help='Select a customized configuration.')
+    parser.add_argument('--post_install', help='post installation process', default=False, action=argparse.BooleanOptionalAction)
     return parser.parse_args()
 
 
@@ -28,26 +29,23 @@ if __name__ == '__main__':
         print(f'Loaded "{args.config}" configuration.')
 
 
-    PackageManager.pacstrap_install('/mnt', config['base']) # Install base arch system
+    if (args.post_install) == False:
+        PackageManager.pacstrap_install('/mnt', config['base']) # Install base arch system
 
-    subprocess.run("sudo genfstab -U /mnt >> /mnt/etc/fstab", shell=True) # Generate fstab
+        CommandManager.run("sudo genfstab -U /mnt >> /mnt/etc/fstab") # Generate fstab
 
-    PackageManager.chroot_install('/mnt', config['additional_packages']) # Install additional packages on top of base system
+        SystemConfig.config_users('/mnt', config['users']) # Configures Users
 
-    # PackageManager.chroot_uninstall() | Uninstall packages from base system
+        PackageManager.install(config['additional_packages']) # Install additional packages on top of base system
 
-    SystemConfig.config_timezone('/mnt', config['timezone']) # Configure timezone
+        SystemConfig.config_grub('/mnt', '/boot/efi') # Installs GRUB
 
-    SystemConfig.config_locales('/mnt', config['locale']) # Configure locales
+        SystemConfig.enable_services('/mnt', config['services']) # Configure services while booted into OS
 
-    SystemConfig.config_hostname('/mnt', config['hostname']) # Configure hostname
 
-    SystemConfig.config_users('/mnt', config['users']) # Configures Users
+    else:
+        SystemConfig.config_timezone(config['timezone']) # Configure timezone
 
-    SystemConfig.config_grub('/mnt', '/boot/efi') # Installs GRUB
+        SystemConfig.config_locales(config['locale']) # Configure locales
 
-    SystemConfig.enable_services('/mnt', config['services']) # Configure services while booted into OS
-
-    # PackageManager.install() | Install packages while booted into OS
-
-    # PackageManager.uninstall() | Uninstall packages while booted into OS
+        SystemConfig.config_hostname(config['hostname']) # Configure hostname
