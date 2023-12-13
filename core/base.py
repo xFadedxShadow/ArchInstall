@@ -7,12 +7,6 @@ import subprocess
 
 
 class CommandManager:
-    def run(command):
-        try:
-            subprocess.run(command)
-        except Exception as e:
-            print(e)
-    
     def chroot_command(root_point = None, command = None):
         if type(root_point) != str or type(root_point) == None:
             raise TypeError(f"Root Mount Point: '{root_point}' argument must be type of str.")
@@ -20,8 +14,9 @@ class CommandManager:
         elif os.path.exists(root_point) == False:
             raise Exception(f"Root Mount Point: '{root_point}' directory does not exist.")
         
+        print(f"Mount point")
 
-        CommandManager.run(f"sudo arch-chroot {root_point} {command}")
+        subprocess.run(f"sudo arch-chroot {root_point} {command}")
 
 
 class PackageManager:
@@ -167,7 +162,7 @@ class SystemConfig:
             print(f"{user} Password")
             CommandManager.chroot_command(root_point, f"sudo passwd {user}")
         
-        
+
         print("Root Password.")
         CommandManager.chroot_command(root_point, "sudo passwd")
 

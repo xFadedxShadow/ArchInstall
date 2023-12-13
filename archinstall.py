@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # PackageManager.chroot_uninstall() | Uninstall packages from base system
 
-    CommandManager.run("sudo genfstab -U /mnt >> /mnt/etc/fstab") # Generate fstab
+    subprocess.run("sudo genfstab -U /mnt >> /mnt/etc/fstab") # Generate fstab
 
     SystemConfig.config_timezone('/mnt', config['timezone']) # Configure timezone
 
