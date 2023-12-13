@@ -50,9 +50,6 @@ if __name__ == '__main__':
 
         SystemConfig.enable_services('/mnt', config['services']) # Configure services while booted into OS
 
-        CommandManager.run('cp -r "~/ArchInstall" /mnt/ArchInstall') # Copies script files to root partition for post installation
-
-
     else:
         SystemConfig.config_timezone(config['timezone']) # Configure timezone
 

@@ -35,9 +35,7 @@
         "firefox",
         "git",
         "discord",
-        "barrier",
-        "vulkan-radeon",
-        "lib32-vulkan-radeon"
+        "barrier"
     ],
     "services": [
         "NetworkManager.service",
