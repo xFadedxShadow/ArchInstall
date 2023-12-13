@@ -143,6 +143,7 @@ class SystemConfig:
         if type(locale) != str or type(locale) == None:
             raise TypeError(f"Locale: '{locale}' argument must be of type str.")
 
+
         CommandManager.chroot_command(root_point, f"sudo echo -e '{locale} UTF-8' > /etc/locale.gen")
         CommandManager.chroot_command(root_point, f"sudo echo -e 'LANG={locale}' > /etc/locale.conf")
         CommandManager.chroot_command(root_point, "sudo locale-gen")
@@ -165,6 +166,7 @@ class SystemConfig:
             CommandManager.chroot_command(root_point, f"sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}")
             print(f"{user} Password")
             CommandManager.chroot_command(root_point, f"sudo passwd {user}")
+        
         
         print("Root Password.")
         CommandManager.chroot_command(root_point, "sudo passwd")
