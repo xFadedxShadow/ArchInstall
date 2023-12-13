@@ -15,7 +15,7 @@ Requirements for this project are listed [here](https://github.com/xFadedxShadow
 
 ## Usage
 ```python
-python archinstall.py {config_location}
+python archinstall.py --config {config_location}
 ```
 
 - Learn more about creating a customized configuration file [here](https://github.com/xFadedxShadow/ArchInstall/wiki#creating-a-custom-configuration-insights) in the wiki.
