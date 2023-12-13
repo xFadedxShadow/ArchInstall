@@ -18,7 +18,7 @@
         "efibootmgr"
     ],
     "users": [
-        "xFadedxShadow"
+        "smoke"
     ],
     "additional_packages": [
         "xorg-server",
@@ -32,7 +32,12 @@
         "pipewire-alsa",
         "pipewire-pulse",
         "pipewire-jack",
-        "firefox"
+        "firefox",
+        "git",
+        "discord",
+        "barrier",
+        "vulkan-radeon",
+        "lib32-vulkan-radeon"
     ],
     "services": [
         "NetworkManager.service",
@@ -40,5 +45,5 @@
     ],
     "timezone": "US/Eastern",
     "locale": "en_US.UTF-8",
-    "hostname": "archlinux"
+    "hostname": "smoke"
 }

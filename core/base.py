@@ -194,6 +194,20 @@ class SystemConfig:
 
         CommandManager.chroot_command(root_point ,f"sudo grub-install --target=x86_64-efi --efi-directory={efi_mount_point} --bootloader-id=GRUB")
         CommandManager.chroot_command(root_point ,"sudo grub-mkconfig -o /boot/grub/grub.cfg")
+    
+
+    def pacman_conf():
+        data = str(SystemConfig.read_file('/etc/pacman.conf'))
+        data = data.replace('#[multilib]\n#Include = /etc/pacman.d/mirrorlist', '[multilib]\nInclude = /etc/pacman.d/mirrorlist')
+        data = data.replace('#ParallelDownloads = 5', 'ParallelDownloads = 4')
+        data = data.replace('#Color', 'Color')
+        SystemConfig.write_file('/etc/pacman.conf', data)
+    
+
+    def update_mirrors():
+        CommandManager.run('sudo pacman -Syy && sudo pacman -S reflector rsync curl')
+        CommandManager.run('sudo reflector --latest 50 --fastest 8 --age 8 --sort rate --country "United States" --save /etc/pacman.d/mirrorlist')
+        CommandManager.run('sudo pacman -Syy')
 
 
 class ConfigManager:
