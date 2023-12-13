@@ -76,7 +76,7 @@ class PackageManager:
                 raise ChildProcessError(f"Package: '{package}' was either not found, or unable to install.")
 
 
-    def chroot_install(root_point = None, package = None):
+    def chroot_install(root_point = None, packages = None):
 
         if type(packages) != list or type(packages) == None:
             raise TypeError(f"Packages: '{packages}' argument must be type of list.")
