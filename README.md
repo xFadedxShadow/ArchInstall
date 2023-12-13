@@ -18,4 +18,11 @@ Requirements for this project are listed [here](https://github.com/xFadedxShadow
 python archinstall.py --config {config_location}
 ```
 
+## Post Installation Usage
+Run this under 'su'
+```python
+python archinstall.py --config {config_location} --post_install
+```
+
+
 - Learn more about creating a customized configuration file [here](https://github.com/xFadedxShadow/ArchInstall/wiki#creating-a-custom-configuration-insights) in the wiki.
