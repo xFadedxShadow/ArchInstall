@@ -16,7 +16,7 @@ class CommandManager:
         
         print(f"Mount point")
 
-        subprocess.run(f"sudo arch-chroot {root_point} {command}")
+        subprocess.run(f"sudo arch-chroot {root_point} {command}", shell=True)
 
 
 class PackageManager:
