@@ -187,7 +187,11 @@ class SystemConfig:
 
         for user in users:
             CommandManager.chroot_command(root_point, f"sudo useradd -m -g users -G wheel,storage,power -s /bin/bash {user}")
+            print(f"{user} Password")
             CommandManager.chroot_command(root_point, f"sudo passwd {user}")
+        
+        print("Root Password.")
+        CommandManager.chroot_command(root_point, "sudo passwd")
 
 
     def enable_services(root_point = None, services = None):
