@@ -55,7 +55,7 @@ class PackageManager:
                 raise ChildProcessError(f"Package: '{package}' was either not found, or unable to uninstall.")
 
 
-    def pacstrap_install(packages = None, root_point = None):
+    def pacstrap_install(root_point = None, packages = None):
 
         if type(packages) != list or type(packages) == None:
             raise TypeError(f"Packages: '{packages}' argument must be type of list.")
@@ -97,7 +97,7 @@ class PackageManager:
                 raise ChildProcessError(f"Package: '{package}' was either not found, or unable to install.")
 
 
-    def chroot_uninstall(packages = None, root_point = None):
+    def chroot_uninstall(root_point = None, packages = None):
 
         if type(packages) != list or type(packages) == None:
             raise TypeError(f"Packages: '{packages}' argument must be type of list.")
