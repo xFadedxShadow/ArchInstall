@@ -11,6 +11,7 @@
         "exfatprogs",
         "btrfs-progs",
         "networkmanager",
+        "python",
         "nano",
         "bash-completion",
         "grub",
