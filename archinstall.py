@@ -30,11 +30,11 @@ if __name__ == '__main__':
 
     PackageManager.pacstrap_install('/mnt', config['base']) # Install base arch system
 
+    subprocess.run("sudo genfstab -U /mnt >> /mnt/etc/fstab") # Generate fstab
+
     PackageManager.chroot_install('/mnt', config['additional_packages']) # Install additional packages on top of base system
 
     # PackageManager.chroot_uninstall() | Uninstall packages from base system
-
-    subprocess.run("sudo genfstab -U /mnt >> /mnt/etc/fstab") # Generate fstab
 
     SystemConfig.config_timezone('/mnt', config['timezone']) # Configure timezone
 
