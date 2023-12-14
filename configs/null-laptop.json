@@ -1,0 +1,45 @@
+{
+    "base": [
+        "base",
+        "base-devel",
+        "linux-zen",
+        "linux-zen-headers",
+        "linux-firmware",
+        "xdg-user-dirs",
+        "dosfstools",
+        "e2fsprogs",
+        "exfatprogs",
+        "btrfs-progs",
+        "networkmanager",
+        "python",
+        "nano",
+        "bash-completion",
+        "grub",
+        "efibootmgr"
+    ],
+    "users": [
+        "xFadedxShadow"
+    ],
+    "additional_packages": [
+        "xorg-server",
+        "plasma-desktop",
+        "plasma-meta",
+        "dolphin",
+        "konsole",
+        "pipewire",
+        "lib32-pipewire",
+        "pipewire-audio",
+        "pipewire-alsa",
+        "pipewire-pulse",
+        "pipewire-jack",
+        "firefox",
+        "discord"
+    ],
+    "services": [
+        "NetworkManager.service",
+        "sddm.service"
+    ],
+    "timezone": "US/Eastern",
+    "locale": "en_US.UTF-8",
+    "hostname": "null-laptop"
+}
