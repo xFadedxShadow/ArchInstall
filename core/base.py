@@ -133,7 +133,7 @@ class SystemConfig:
         with open(_file, 'w') as f : return f.write(_data)
 
 
-    def config_timezone(timezone = None):
+    def config_timezone(timezone = None): # Don't user timedatectl while in live enviorment just make a symbol link
         if type(timezone) != str or type(timezone) == None:
             raise TypeError(f"Timezone: '{timezone}' must be type str.")
 

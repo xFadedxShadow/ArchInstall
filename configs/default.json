@@ -18,7 +18,7 @@
         "efibootmgr"
     ],
     "users": [
-        "xFadedxShadow"
+        "username"
     ],
     "additional_packages": [
         "xorg-server",
@@ -32,10 +32,12 @@
         "pipewire-alsa",
         "pipewire-pulse",
         "pipewire-jack",
-        "firefox"
+        "firefox",
+        "neofetch"
     ],
     "services": [
         "NetworkManager.service",
+        "bluetooth.service",
         "sddm.service"
     ],
     "timezone": "US/Eastern",
