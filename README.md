@@ -19,7 +19,7 @@ python archinstall.py --config {config_location}
 ```
 
 ## Post Installation Usage
-Run this under 'su'
+Run this under 'su' while booted into OS
 ```python
 python archinstall.py --config {config_location} --post_install
 ```
