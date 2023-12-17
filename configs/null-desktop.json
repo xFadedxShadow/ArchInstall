@@ -15,7 +15,8 @@
         "nano",
         "bash-completion",
         "grub",
-        "efibootmgr"
+        "efibootmgr",
+        "amd-ucode"
     ],
     "users": [
         "xfadedxshadow"
